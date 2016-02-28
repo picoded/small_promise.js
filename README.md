@@ -4,6 +4,8 @@ Because IE do not support this feature.
 
 So I made an as lightweight as possible Promise API implementation as per MDN documentation. (Not the full ES6 / APlus specs).
 
+See: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
 Written in no-nonsense plain JS. No require, no module, no etc.
 
 # Parameter Type safety = off
@@ -12,11 +14,18 @@ Because i generally do code logic debugging in chrome / firefox ANYWAY.
 
 And passing the wrong parameter type (like a null callback) is a logic error.
 
-# iterable = array
+# iterable = array, Promise.length = undefined, Promise.resolve(!thenable)
 
-The iterable parameter used in the MDN documentation is assumed to be an array. 
+Note the following pitfalls.
 
-Go find a larger polyfill if you need other alternatives
+- The iterable parameter used in the MDN documentation is assumed to be an array/object with forEach implementation. 
+- Promise object "length" properties is undefined. (Is there a real use case for this???)
+- Promise.resolve, does not support thenable. Seriously, call the then/reject directly instead.
+
+Also in case in the future, they allow promise objects to be used in multiple thread environment.
+This is considered thread unsafe.
+
+Go find a larger polyfill if you need these features
 
 # Will this be blazing fast ?
 

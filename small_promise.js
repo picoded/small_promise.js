@@ -1,5 +1,8 @@
 var small_promise = (function() {
 	
+	// Core functions
+	//--------------------------------------------------------------------------------------------------------
+	
 	/// Internal Function: callback_template
 	/// Used to build the accept / reject call back passed to executor
 	function callback_template(promiseObj, callbackArray, newStatus) {
@@ -28,7 +31,6 @@ var small_promise = (function() {
 	}
 	
 	/// Function: then
-	/// See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
 	small_promise.prototype.then = function(onFulfilled,onRejected) {
 		if(onFulfilled) {
 			if(this.status > 0) { // Promise already resolved, call it NOW
@@ -41,7 +43,6 @@ var small_promise = (function() {
 	}
 	
 	/// Function: catch
-	/// See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
 	small_promise.prototype.catch = function(onRejected) {
 		if(onRejected) {
 			if(this.status < 0) { // Promise already resolved, call it NOW
@@ -52,9 +53,54 @@ var small_promise = (function() {
 		}
 	}
 	
+	// Static functions / variables
+	//--------------------------------------------------------------------------------------------------------
+	
 	/// Static Variable: isNotNative
 	/// true boolean, used to check if promise polyfill, is not native implementation
 	small_promise.isNotNative = true;
+	
+	/// Static Function: resolve
+	small_promise.resolve = function(val) {
+		return (
+			(val instanceof small_promise)?
+			val :
+			(new small_promise(function(onFulfilled) { onFulfilled(val) }))
+		);
+	}
+	
+	/// Static Function: reject
+	small_promise.reject = function(val) {
+		return (new small_promise(function(onFulfilled,onRejected) { onRejected(val) }));
+	}
+	
+	// The only error message supported, because this may actually accidentally happen
+	// Without realising, while following MDN docs. And trigger a nasty surprise in IE
+	var forEachErrMsg = "all/race assumes an object/array with forEach implementation";
+	
+	/// Static Function: race
+	small_promise.race = function(iterable) {
+		if( !iterable.forEach ) { throw new TypeError(forEachErrMsg); }
+		return (new small_promise(function(onFulfilled,onRejected) {
+			iterable.forEach(function(n) {
+				n.then(onFulfilled,onRejected);
+			});
+		}));
+	}
+	
+	/// Static Function: all
+	small_promise.all = function(iterable) {
+		if( !iterable.forEach ) { throw new TypeError(forEachErrMsg); }
+		return (new small_promise(function(onFulfilled,onRejected) {
+			var r = [];
+			iterable.forEach(function(n) {
+				n.then(function(val) {
+					r.push(val);
+				},onRejected);
+			});
+			onFulfilled(r);
+		}));
+	}
 	
 	return small_promise;
 })();
