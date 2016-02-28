@@ -15,6 +15,10 @@ var small_promise = (function() {
 				callbackArray.forEach(function(callback) {
 					callback(val);
 				});
+				// Garbage collect
+				callbackArray = null;
+				promiseObj.then_array = null;
+				promiseObj.catch_array = null;
 			}
 		}
 	}
@@ -92,13 +96,13 @@ var small_promise = (function() {
 	small_promise.all = function(iterable) {
 		if( !iterable.forEach ) { throw new TypeError(forEachErrMsg); }
 		return (new small_promise(function(onFulfilled,onRejected) {
-			var r = [];
+			var res = []; //result array
 			iterable.forEach(function(n) {
 				n.then(function(val) {
-					r.push(val);
+					res.push(val);
 				},onRejected);
 			});
-			onFulfilled(r);
+			onFulfilled(res);
 		}));
 	}
 	
