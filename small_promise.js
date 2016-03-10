@@ -3,17 +3,17 @@ var small_promise = (function() {
 	// Core functions
 	//--------------------------------------------------------------------------------------------------------
 	
-	/// Internal Function: callback_template
+	/// Internal Function: callback_builder
 	/// Used to build the accept / reject call back passed to executor
-	function callback_template(promiseObj, callbackArray, newStatus) {
+	function callback_builder(promiseObj, callbackArray, newStatus) {
 		return function(val) {
 			if( promiseObj.status === 0 ) {
 				// Update status and value
 				promiseObj.status = newStatus;
 				promiseObj.value = val;
-				// Trigger all the listeners
-				callbackArray.forEach(function(callback) {
-					callback(val);
+				// Trigger all the callback listeners
+				callbackArray.forEach(function(C) {
+					C(val);
 				});
 				// Garbage collect
 				callbackArray = null;
@@ -29,17 +29,21 @@ var small_promise = (function() {
 		// 0 = "unresolved", 1 = "resolved", -1 = "rejected"
 		this.status = 0;
 		executor(
-			callback_template(this, this.then_array = [], 1),
-			callback_template(this, this.catch_array = [], -1)
+			callback_builder(this, this.then_array = [], 1),
+			callback_builder(this, this.catch_array = [], -1)
 		);
 	}
 	
+	/// Variable: Prototype class object
+	/// Used to optimize down character count after uglifying
+	var protoClass = small_promise.prototype;
+	
 	/// Function: then
-	small_promise.prototype.then = function(onFulfilled,onRejected) {
+	protoClass.then = function(onFulfilled,onRejected) {
 		if(onFulfilled) {
 			if(this.status > 0) { // Promise already resolved, call it NOW
 				onFulfilled(this.value);
-			} else {
+			} else { //Q up the callbacks
 				this.then_array.push(onFulfilled);
 			}
 		}
@@ -47,11 +51,11 @@ var small_promise = (function() {
 	}
 	
 	/// Function: catch
-	small_promise.prototype.catch = function(onRejected) {
+	protoClass.catch = function(onRejected) {
 		if(onRejected) {
 			if(this.status < 0) { // Promise already resolved, call it NOW
 				onRejected(this.value);
-			} else {
+			} else { //Q up the callbacks
 				this.catch_array.push(onRejected);
 			}
 		}
@@ -80,14 +84,14 @@ var small_promise = (function() {
 	
 	// The only error message supported, because this may actually accidentally happen
 	// Without realising, while following MDN docs. And trigger a nasty surprise in IE
-	var forEachErrMsg = "all/race assumes an object/array with forEach implementation";
+	var forEachErrMsg = "all/race requires an object/array with forEach implementation";
 	
 	/// Static Function: race
 	small_promise.race = function(iterable) {
 		if( !iterable.forEach ) { throw new TypeError(forEachErrMsg); }
 		return (new small_promise(function(onFulfilled,onRejected) {
-			iterable.forEach(function(n) {
-				n.then(onFulfilled,onRejected);
+			iterable.forEach(function(N) {
+				N.then(onFulfilled,onRejected);
 			});
 		}));
 	}
@@ -97,8 +101,8 @@ var small_promise = (function() {
 		if( !iterable.forEach ) { throw new TypeError(forEachErrMsg); }
 		return (new small_promise(function(onFulfilled,onRejected) {
 			var res = []; //result array
-			iterable.forEach(function(n) {
-				n.then(function(val) {
+			iterable.forEach(function(N) {
+				N.then(function(val) {
 					res.push(val);
 				},onRejected);
 			});
