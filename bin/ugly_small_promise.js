@@ -7,11 +7,9 @@ var small_promise = (function() {
 				a.forEach(function(C) {
 					C(v);
 				});
-				a = null;
-				o.t = null;
-				o.c = null;
+				a = o.t = o.c = null;
 			}
-		}
+		};
 	}
 	function P(e) {
 		this.s = 0;
@@ -30,7 +28,7 @@ var small_promise = (function() {
 			}
 		}
 		this.catch(R);
-	}
+	};
 	K.catch = function(R) {
 		if(R) {
 			if(this.s < 0) { 
@@ -39,18 +37,18 @@ var small_promise = (function() {
 				this.c.push(R);
 			}
 		}
-	}
+	};
 	P.isNotNative = true;
 	P.resolve = function(v) {
 		return (
 			(v instanceof P)?
 			v :
-			(new P(function(F) { F(v) }))
+			(new P(function(F) { F(v); }))
 		);
-	}
+	};
 	P.reject = function(v) {
-		return (new P(function(F,R) { R(v) }));
-	}
+		return (new P(function(F,R) { R(v); }));
+	};
 	var M = "all/race requires an object/array with forEach implementation";
 	P.race = function(I) {
 		if( !I.forEach ) { throw new TypeError(M); }
@@ -59,7 +57,7 @@ var small_promise = (function() {
 				N.then(F,R);
 			});
 		}));
-	}
+	};
 	P.all = function(I) {
 		if( !I.forEach ) { throw new TypeError(M); }
 		return (new P(function(F,R) {
@@ -71,6 +69,6 @@ var small_promise = (function() {
 			});
 			F(res);
 		}));
-	}
-	return P;
+	};
+		return P;
 })();

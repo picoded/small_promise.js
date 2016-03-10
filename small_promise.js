@@ -16,11 +16,9 @@ var small_promise = (function() {
 					C(val);
 				});
 				// Garbage collect
-				callbackArray = null;
-				promiseObj.then_array = null;
-				promiseObj.catch_array = null;
+				callbackArray = promiseObj.then_array = promiseObj.catch_array = null;
 			}
-		}
+		};
 	}
 	
 	/// Function: small_promise
@@ -48,7 +46,7 @@ var small_promise = (function() {
 			}
 		}
 		this.catch(onRejected);
-	}
+	};
 	
 	/// Function: catch
 	protoClass.catch = function(onRejected) {
@@ -59,7 +57,7 @@ var small_promise = (function() {
 				this.catch_array.push(onRejected);
 			}
 		}
-	}
+	};
 	
 	// Static functions / variables
 	//--------------------------------------------------------------------------------------------------------
@@ -73,14 +71,14 @@ var small_promise = (function() {
 		return (
 			(val instanceof small_promise)?
 			val :
-			(new small_promise(function(onFulfilled) { onFulfilled(val) }))
+			(new small_promise(function(onFulfilled) { onFulfilled(val); }))
 		);
-	}
+	};
 	
 	/// Static Function: reject
 	small_promise.reject = function(val) {
-		return (new small_promise(function(onFulfilled,onRejected) { onRejected(val) }));
-	}
+		return (new small_promise(function(onFulfilled,onRejected) { onRejected(val); }));
+	};
 	
 	// The only error message supported, because this may actually accidentally happen
 	// Without realising, while following MDN docs. And trigger a nasty surprise in IE
@@ -94,7 +92,7 @@ var small_promise = (function() {
 				N.then(onFulfilled,onRejected);
 			});
 		}));
-	}
+	};
 	
 	/// Static Function: all
 	small_promise.all = function(iterable) {
@@ -108,7 +106,7 @@ var small_promise = (function() {
 			});
 			onFulfilled(res);
 		}));
-	}
+	};
 	
 	return small_promise;
 })();
