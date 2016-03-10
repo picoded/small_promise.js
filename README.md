@@ -8,6 +8,11 @@ See: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objec
 
 Written in no-nonsense plain JS. No require, no module, no etc.
 
+# I want the polyfill files now
+
+**bin/smallpromise.polyfill.min.js** : Polyfill for IE9+
+**bin/smallpromise.polyfill-ie8.min.js** : Polyfill for IE8+
+
 # Parameter Type safety = off
 
 Because i generally do code logic debugging in chrome / firefox ANYWAY. 
@@ -38,6 +43,10 @@ IE 9 and above really.
 An IE 8 version is also added.
 
 I did not bother about IE 7 and below.
+
+# How to build
+
+Build using `gulp`
 
 # TODO ?
 
