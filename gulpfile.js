@@ -59,4 +59,26 @@ gulp.task('minify', ['ugly'], function() {
 		.pipe(gulp.dest('bin'));
 });
 
-gulp.task('default', ['minify']);
+gulp.task('polyfill', ['minify'], function() {
+	return gulp.src(['bin/small_promise.min.js'])
+		.pipe(rename('small_promise.polyfill.min.js'))
+		.pipe(replace(/var small_promise=/mg, 'window.Promise=window.Promise||'))
+		.pipe(uglify({
+			mangle: false
+		}).on('error', gutil.log))
+		.pipe(gulp.dest('bin'));
+});
+
+gulp.task('polyfill_ie8', ['minify'], function() {
+	return gulp.src([
+			'depends_ie8.js',
+			'bin/small_promise.polyfill.min.js'
+		])
+		.pipe(concat('small_promise.polyfill-ie8.min.js'))
+		//.pipe(uglify({
+		//	mangle: false
+		//}).on('error', gutil.log))
+		.pipe(gulp.dest('bin'));
+});
+
+gulp.task('default', ['polyfill_ie8']);
