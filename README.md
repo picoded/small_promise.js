@@ -10,8 +10,8 @@ Written in no-nonsense plain JS. No require, no module, no etc.
 
 # I want the polyfill files now
 
-**bin/smallpromise.polyfill.min.js** : Polyfill for IE9+
-**bin/smallpromise.polyfill-ie8.min.js** : Polyfill for IE8+
+**bin/smallpromise.polyfill.min.js** : Polyfill for IE9+  
+**bin/smallpromise.polyfill-ie8.min.js** : Polyfill for IE8+  
 
 # Parameter Type safety = off
 
@@ -27,8 +27,7 @@ Note the following pitfalls.
 - Promise object "length" properties is undefined. (Is there a real use case for this???)
 - Promise.resolve, does not support thenable. Seriously, call the then/reject directly instead.
 
-Also in case in the future, they allow promise objects to be used in multiple thread environment.
-This is considered thread unsafe.
+Also in case in the future, they allow promise objects to be used in multiple thread environment. This is considered thread unsafe.
 
 Go find a larger polyfill if you need these features
 
