@@ -2,7 +2,7 @@
 
 Because IE do not support this feature.
 
-So I made an as lightweight as possible Promise API implementation as per MDN documentation. (Not the full ES6 / APlus specs).
+So I made an as lightweight as possible Promise API implementation as per MDN documentation. (Not the full ES6 / APlus specs, 884 bytes minified).
 
 See: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
