@@ -43,6 +43,8 @@ gulp.task('ugly', function() {
 		.pipe(replace(/forEachErrMsg/mg, 'M'))
 		// iterable -> I
 		.pipe(replace(/iterable/mg, 'I'))
+		// is_function -> Q
+		.pipe(replace(/is_function/mg, 'Q'))
 		// Remove blank lines
 		.pipe(replace(/^\s*\n/mg, ''))
 		// Build ugly script

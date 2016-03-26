@@ -1,7 +1,10 @@
 var small_promise = (function() {
+	function Q(v) {
+		return typeof v === "function";
+	}
 	function B(o, a, n) {
 		return function(v) {
-			if( o.s === 0 ) {
+			if( o.s == 0 ) {
 				o.s = n;
 				o.v = v;
 				a.forEach(function(C) {
@@ -20,23 +23,25 @@ var small_promise = (function() {
 	}
 	var K = P.prototype;
 	K.then = function(F,R) {
-		if(F) {
+		if(Q(F)) {
 			if(this.s > 0) { 
 				F(this.v);
-			} else { 
+			} else if(this.s == 0) { 
 				this.t.push(F);
 			}
 		}
 		this.catch(R);
+		return this;
 	};
 	K.catch = function(R) {
-		if(R) {
+		if(Q(R)) {
 			if(this.s < 0) { 
 				R(this.v);
-			} else { 
+			} else if(this.s == 0) { 
 				this.c.push(R);
 			}
 		}
+		return this;
 	};
 	P.isNotNative = true;
 	P.resolve = function(v) {
