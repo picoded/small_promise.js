@@ -1,5 +1,8 @@
 var small_promise = (function() {
 	
+	// Utility functions
+	//--------------------------------------------------------------------------------------------------------
+	
 	// Core functions
 	//--------------------------------------------------------------------------------------------------------
 	
@@ -7,7 +10,7 @@ var small_promise = (function() {
 	/// Used to build the accept / reject call back passed to executor
 	function callback_builder(promiseObj, callbackArray, newStatus) {
 		return function(val) {
-			if( promiseObj.status === 0 ) {
+			if( promiseObj.status == 0 ) {
 				// Update status and value
 				promiseObj.status = newStatus;
 				promiseObj.value = val;
@@ -41,7 +44,7 @@ var small_promise = (function() {
 		if(onFulfilled) {
 			if(this.status > 0) { // Promise already resolved, call it NOW
 				onFulfilled(this.value);
-			} else { //Q up the callbacks
+			} else if(this.status == 0) { //Q up the callbacks
 				this.then_array.push(onFulfilled);
 			}
 		}
@@ -53,7 +56,7 @@ var small_promise = (function() {
 		if(onRejected) {
 			if(this.status < 0) { // Promise already resolved, call it NOW
 				onRejected(this.value);
-			} else { //Q up the callbacks
+			} else if(this.status == 0) { //Q up the callbacks
 				this.catch_array.push(onRejected);
 			}
 		}
