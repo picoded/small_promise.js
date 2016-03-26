@@ -2,6 +2,9 @@ var small_promise = (function() {
 	
 	// Utility functions
 	//--------------------------------------------------------------------------------------------------------
+	function is_function(v) {
+		return typeof v === "function";
+	}
 	
 	// Core functions
 	//--------------------------------------------------------------------------------------------------------
@@ -41,7 +44,7 @@ var small_promise = (function() {
 	
 	/// Function: then
 	protoClass.then = function(onFulfilled,onRejected) {
-		if(onFulfilled) {
+		if(is_function(onFulfilled)) {
 			if(this.status > 0) { // Promise already resolved, call it NOW
 				onFulfilled(this.value);
 			} else if(this.status == 0) { //Q up the callbacks
@@ -49,17 +52,19 @@ var small_promise = (function() {
 			}
 		}
 		this.catch(onRejected);
+		return this;
 	};
 	
 	/// Function: catch
 	protoClass.catch = function(onRejected) {
-		if(onRejected) {
+		if(is_function(onRejected)) {
 			if(this.status < 0) { // Promise already resolved, call it NOW
 				onRejected(this.value);
 			} else if(this.status == 0) { //Q up the callbacks
 				this.catch_array.push(onRejected);
 			}
 		}
+		return this;
 	};
 	
 	// Static functions / variables
